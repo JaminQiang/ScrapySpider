@@ -5,10 +5,12 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
-import scrapy
+from scrapy.item import Item, Field
 
-
-class ScrapyspiderItem(scrapy.Item):
+class ScrapyspiderItem(Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    url = Field()
+    forum = Field()
+    poster = Field()
+    content = Field()
