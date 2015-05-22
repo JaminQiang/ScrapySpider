@@ -10,7 +10,7 @@ from scrapy import log
 from ScrapySpider.items import ScrapyspiderItem
 from twisted.enterprise import adbapi
 from scrapy.contrib.exporter import XmlItemExporter
-#from dataProcess import dataProcess
+from dataProcess import dataProcess
 
 class XmlWritePipeline(object):
 	"""docstring for XmlWritePipeline"""
