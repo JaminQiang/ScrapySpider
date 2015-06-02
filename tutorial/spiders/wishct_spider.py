@@ -1,13 +1,12 @@
 import scrapy
 
-from tutorial.items import DmozItem
+from tutorial.items import wishctItem
 
-class DmozSpider(scrapy.Spider):
-	name = "dmoz"
-	allowed_domains = ["dmoz.org"]
+class wishctSpider(scrapy.Spider):
+	name = "wishct"
+	allowed_domains = ["www.wishct.com"]
 	start_urls = [
-		"http://www.dmoz.org/Computers/Programming/Languages/Python/Books/",
-		"http://www.dmoz.org/Computers/Programming/Languages/Python/Resources/"
+		"http://www.wishct.com/x2/forum.php/"
 		]
 
 	"""
@@ -23,9 +22,14 @@ class DmozSpider(scrapy.Spider):
 	"""
 
 	def parse(self, response):
+		filename = response.url.split("/")[-2]
+		with open(filename, 'wb') as f:
+			f.write(response.body)
+		"""
 		for sel in response.xpath('//ul/li'):
 			item = DmozItem()
 			item['title'] = sel.xpath('a/text()').extract()
 			item['link'] = sel.xpath('a/@href').extract()
 			item['desc'] = sel.xpath('text()').extract()
 			yield item
+		"""

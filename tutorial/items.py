@@ -14,3 +14,10 @@ class DmozItem(scrapy.Item):
     title = scrapy.Field()
     link = scrapy.Field()
     desc = scrapy.Field()
+
+class wishctItem(scrapy.Item):
+	url = scrapy.Field()
+	title = scrapy.Field()
+	user = scrapy.Field()
+	content = scrapy.Field()
+
