@@ -2,25 +2,22 @@ import scrapy
 
 from tutorial.items import wishctItem
 
+from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
+
+
 class wishctSpider(scrapy.Spider):
 	name = "wishct"
 	allowed_domains = ["www.wishct.com"]
 	start_urls = [
-		#"http://www.wishct.com/x2/forum.php/",
-		"http://www.wishct.com/x2/forum.php?mod=viewthread&tid=272858&extra=page%3D1"
+		"http://www.wishct.com/x2/forum.php/",
+		#"http://www.wishct.com/x2/forum.php?mod=forumdisplay&fid=84"
 		]
-
-	"""
-	def start_requests(self):
-		return [scrapy.FormRequest("http://www.wishct.com/x2/forum.php?mod=viewthread&tid=272858&extra=page%3D1",
-									formdata={'user':'sunwayhotel','pass':'4216wow521'},
-									callback=self.logged_in)]
-
-	def logged_in(self, response):
-		# here you would extract links to follow and return Requests for
-		# each of them, with another callback
-		pass
-	"""
+	link_extractor = {
+		"forum": SgmlLinkExtractor(allow = 'forum.php.*'),
+		"page": SgmlLinkExtractor(allow = ''),
+		"nextforum": SgmlLinkExtractor(allow = ''),
+		"nextpage": SgmlLinkExtractor(allow = ''),
+	}
 
 	"""
 	def parse(self, response):
@@ -40,15 +37,48 @@ class wishctSpider(scrapy.Spider):
 		return scrapy.FormRequest.from_response(
 			response,
 			formdata = {'username':'sunwayhotel', 'password':'4216wow521'},
-			callback = self.after_login
+			callback = self.homepage
 			)
 
-	def after_login(self, response):
+	def homepage(self, response):
 		# check login succeed before going on
 		if "authentication failed" in response.body:
 			self.log("Login failed", level = log.ERROR)
 			return
+		
+		if self.link_extractor['forum'].extract_links(response):
+			print self.link_extractor['forum'].extract_links(response)
+		else:
+			print 'Nothing found'
+		#for link in self.link_extractor['forum'].extract_links(response):
+			#yield Request(url = link.url, callback = self.forum)
+		"""
+		from scrapy.shell import inspect_response
+		inspect_response(response)
+		"""
 
+	def forum(self, response):
+		"""
+		for link in self.link_extractor['nextforum'].extract_links(response):
+			yield Request(url = link.url, callback = self.forum)
+		for link in self.link_extractor['page'].extract_links(response):
+			yield Request(url = link.url, callback = self.page)
+		"""
 		filename = response.url.split("/")[-2]
 		with open(filename, 'wb') as f:
 			f.write(response.body)
+
+	def page(self, response):
+		pass
+
+
+
+
+
+
+
+
+
+
+
+
