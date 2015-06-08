@@ -18,6 +18,6 @@ class DmozItem(scrapy.Item):
 class wishctItem(scrapy.Item):
 	url = scrapy.Field()
 	title = scrapy.Field()
-	user = scrapy.Field()
+	poster = scrapy.Field()
 	content = scrapy.Field()
 
