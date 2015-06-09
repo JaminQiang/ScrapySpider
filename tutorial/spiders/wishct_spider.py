@@ -18,9 +18,9 @@ class wishctSpider(scrapy.Spider):
 		]
 	link_extractor = {
 		"forum": SgmlLinkExtractor(allow = 'forum\.php\?mod\=forumdisplay\&fid\=84$'),
-		"page": SgmlLinkExtractor(allow = 'forum\.php\?mod\=viewthread&tid\=\d{6}&extra\=page\%3D1$'),
+		"page": SgmlLinkExtractor(allow = 'forum\.php\?mod\=viewthread&tid\=\d{6}&extra\=page\%3D\d+$'),
 		"nextforum": SgmlLinkExtractor(allow = 'forum\.php\?mod\=forumdisplay\&fid\=84&page\=\d+$'),
-		"nextpage": SgmlLinkExtractor(allow = 'forum\.php\?mod\=viewthread&tid\=\d{6}&extra\=page\%3D1$'),
+		"nextpage": SgmlLinkExtractor(allow = 'forum\.php\?mod\=viewthread&tid\=\d{6}&extra\=page\%3D\d+$'),
 	}
 
 	_x_query = {
@@ -69,12 +69,11 @@ class wishctSpider(scrapy.Spider):
 
 	def forum(self, response):
 		
-		for link in self.link_extractor['nextforum'].extract_links(response):
-			yield Request(url = link.url, callback = self.forum)
-		
 		for link in self.link_extractor['page'].extract_links(response):
 			yield Request(url = link.url, callback = self.page)
 
+		for link in self.link_extractor['nextforum'].extract_links(response):
+			yield Request(url = link.url, callback = self.forum)
 
 		"""
 		# test whether extract_links can get urls correctly
@@ -95,7 +94,7 @@ class wishctSpider(scrapy.Spider):
 		wishctItem_loader.add_xpath('title', self._x_query['title'])
 		poster = response.xpath(self._x_query['poster']).extract()[0]
 		wishctItem_loader.add_value('poster', poster)
-		#wishctItem_loader.add_xpath('content', self._x_query['content'])
+		wishctItem_loader.add_xpath('content', self._x_query['content'])
 
 		return wishctItem_loader.load_item()
 		"""

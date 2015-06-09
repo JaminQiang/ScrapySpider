@@ -30,7 +30,7 @@ class XmlWritePipeline(object):
         return pipeline
 
     def spider_opened(self, spider):
-        self.file = open('wishct2.xml', 'wb')
+        self.file = open('wishct.xml', 'wb')
         self.expoter = XmlItemExporter(self.file)
         self.expoter.start_exporting()
 
